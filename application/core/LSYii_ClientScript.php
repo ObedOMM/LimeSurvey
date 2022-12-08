@@ -16,19 +16,19 @@ if (!defined('BASEPATH')) {
  *
  */
 
-    /*
- * NOTE 1 : To refresh the assets, the base directory of the template must be updated.
- * NOTE 2: By default, Asset Manager is off when debug mode is on.
- *
- * Developers should then think about :
- * 1. refreshing their brower's cache (ctrl + F5) to see their changes
- * 2. update the config.xml lastUpdate before pushing, to be sure that end users will have the new version
- *
- *
- * For more detail, see :
- *  http://www.yiiframework.com/doc/api/1.1/CClientScript#addPackage-detail
- *  http://www.yiiframework.com/doc/api/1.1/YiiBase#setPathOfAlias-detail
- */
+/*
+* NOTE 1 : To refresh the assets, the base directory of the template must be updated.
+* NOTE 2: By default, Asset Manager is off when debug mode is on.
+*
+* Developers should then think about :
+* 1. refreshing their brower's cache (ctrl + F5) to see their changes
+* 2. update the config.xml lastUpdate before pushing, to be sure that end users will have the new version
+*
+*
+* For more detail, see :
+*  http://www.yiiframework.com/doc/api/1.1/CClientScript#addPackage-detail
+*  http://www.yiiframework.com/doc/api/1.1/YiiBase#setPathOfAlias-detail
+*/
 
 class LSYii_ClientScript extends CClientScript
 {
@@ -321,13 +321,13 @@ class LSYii_ClientScript extends CClientScript
         }
 
         if (isset($this->packages[$name])) {
-                    $package = $this->packages[$name];
+            $package = $this->packages[$name];
         } else {
             if ($this->corePackages === null) {
-                            $this->corePackages = require(YII_PATH . '/web/js/packages.php');
+                $this->corePackages = require(YII_PATH . '/web/js/packages.php');
             }
             if (isset($this->corePackages[$name])) {
-                            $package = $this->corePackages[$name];
+                $package = $this->corePackages[$name];
             }
         }
 
@@ -336,7 +336,7 @@ class LSYii_ClientScript extends CClientScript
 
             if (!empty($package['depends'])) {
                 foreach ($package['depends'] as $p) {
-                                    $this->registerPackageScriptOnPosition($p, $position);
+                    $this->registerPackageScriptOnPosition($p, $position);
                 }
             }
 
@@ -345,9 +345,9 @@ class LSYii_ClientScript extends CClientScript
             $params = func_get_args();
             $this->recordCachingAction('clientScript', 'registerPackageScriptOnPosition', $params);
         } elseif (YII_DEBUG) {
-                    throw new CException('There is no LSYii_ClientScript package: ' . $name);
+            throw new CException('There is no LSYii_ClientScript package: ' . $name);
         } else {
-                    Yii::log('There is no LSYii_ClientScript package: ' . $name, CLogger::LEVEL_WARNING, 'system.web.LSYii_ClientScript');
+            Yii::log('There is no LSYii_ClientScript package: ' . $name, CLogger::LEVEL_WARNING, 'system.web.LSYii_ClientScript');
         }
 
         return $this;
@@ -359,7 +359,7 @@ class LSYii_ClientScript extends CClientScript
     public function renderCoreScripts()
     {
         if ($this->coreScripts === null) {
-                    return;
+            return;
         }
 
         $cssFiles = array();
@@ -379,21 +379,21 @@ class LSYii_ClientScript extends CClientScript
             }
             if (!empty($package['css'])) {
                 foreach ($package['css'] as $css) {
-                                    $cssFiles[$baseUrl . '/' . $css] = '';
+                    $cssFiles[$baseUrl . '/' . $css] = '';
                 }
             }
         }
         // merge in place
         if ($cssFiles !== array()) {
             foreach ($this->cssFiles as $cssFile => $media) {
-                            $cssFiles[$cssFile] = $media;
+                $cssFiles[$cssFile] = $media;
             }
             $this->cssFiles = $cssFiles;
         }
         if ($jsFiles !== array()) {
             if (isset($this->scriptFiles[$this->coreScriptPosition])) {
                 foreach ($this->scriptFiles[$this->coreScriptPosition] as $url => $value) {
-                                    $jsFiles[$url] = $value;
+                    $jsFiles[$url] = $value;
                 }
             }
             $this->scriptFiles[$this->coreScriptPosition] = $jsFiles;
@@ -402,7 +402,7 @@ class LSYii_ClientScript extends CClientScript
             foreach ($jsFilesPositioned as $position => $fileArray) {
                 if (isset($this->scriptFiles[$position])) {
                     foreach ($this->scriptFiles[$position] as $url => $value) {
-                                            $fileArray[$url] = $value;
+                        $fileArray[$url] = $value;
                     }
                 }
                 $this->scriptFiles[$position] = $fileArray;
@@ -419,13 +419,13 @@ class LSYii_ClientScript extends CClientScript
         $html = '';
 
         foreach ($this->metaTags as $meta) {
-                    $html .= CHtml::metaTag($meta['content'], null, null, $meta) . "\n";
+            $html .= CHtml::metaTag($meta['content'], null, null, $meta) . "\n";
         }
         foreach ($this->linkTags as $link) {
-                    $html .= CHtml::linkTag(null, null, null, null, $link) . "\n";
+            $html .= CHtml::linkTag(null, null, null, null, $link) . "\n";
         }
         foreach ($this->cssFiles as $url => $media) {
-                    $html .= CHtml::cssFile($url, $media) . "\n";
+            $html .= CHtml::cssFile($url, $media) . "\n";
         }
 
         //Propagate our debug settings into the javascript realm
@@ -438,32 +438,6 @@ class LSYii_ClientScript extends CClientScript
         }
 
         $html .= "<script type='text/javascript'>window.debugState = {frontend : (" . $debugFrontend . " === 1), backend : (" . $debugBackend . " === 1)};</script>";
-
-        /**
-         * @TODO This is hardcode to see how works PostHog analytics in cloud version
-         * @var LSUserIdentity
-         */
-        $user = Yii::app()->user;
-        if (!is_null($user->id)) {
-            $html .= '<script type="text/javascript"> 
-                !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-                posthog.init(
-                    \'phc_zgWEIuSlDVtXXISxJce6HvJC7mYI0UvuDlD8QfI3s8L\',
-                    {
-                        api_host:\'https://analytics.limesurvey.org\',
-                        save_referrer: false,
-                        ip: false,
-                        property_blacklist: ["$current_url", "$host", "$referrer", "$referring_domain"]
-                    }
-                );
-                posthog.identify(
-                    "' . Yii::app()->user->getId() . '",
-                    { planType: "Basic" },
-                    { limeSurveyVersion: "5" },
-                    { $current_url: "http://example.com" }
-                );
-            </script>';
-        }
 
         if ($this->enableJavaScript) {
             if (isset($this->scriptFiles[self::POS_HEAD])) {
@@ -486,9 +460,9 @@ class LSYii_ClientScript extends CClientScript
             $count = 0;
             $output = preg_replace('/(<title\b[^>]*>|<\\/head\s*>)/is', '<###head###>$1', $output, 1, $count);
             if ($count) {
-                            $output = str_replace('<###head###>', $html, $output);
+                $output = str_replace('<###head###>', $html, $output);
             } else {
-                            $output = $html . $output;
+                $output = $html . $output;
             }
         }
     }
@@ -505,9 +479,9 @@ class LSYii_ClientScript extends CClientScript
         if (isset($this->scriptFiles[self::POS_PREBEGIN])) {
             foreach ($this->scriptFiles[self::POS_PREBEGIN] as $scriptFileUrl => $scriptFileValue) {
                 if (is_array($scriptFileValue)) {
-                                    $html .= CHtml::scriptFile($scriptFileUrl, $scriptFileValue) . "\n";
+                    $html .= CHtml::scriptFile($scriptFileUrl, $scriptFileValue) . "\n";
                 } else {
-                                    $html .= CHtml::scriptFile($scriptFileUrl) . "\n";
+                    $html .= CHtml::scriptFile($scriptFileUrl) . "\n";
                 }
             }
         }
@@ -517,9 +491,9 @@ class LSYii_ClientScript extends CClientScript
         if (isset($this->scriptFiles[self::POS_BEGIN])) {
             foreach ($this->scriptFiles[self::POS_BEGIN] as $scriptFileUrl => $scriptFileValue) {
                 if (is_array($scriptFileValue)) {
-                                    $html .= CHtml::scriptFile($scriptFileUrl, $scriptFileValue) . "\n";
+                    $html .= CHtml::scriptFile($scriptFileUrl, $scriptFileValue) . "\n";
                 } else {
-                                    $html .= CHtml::scriptFile($scriptFileUrl) . "\n";
+                    $html .= CHtml::scriptFile($scriptFileUrl) . "\n";
                 }
             }
         }
@@ -561,18 +535,18 @@ class LSYii_ClientScript extends CClientScript
 
         $fullPage = 0;
         if (preg_match('/<###end###>/', $output)) {
-                    $fullPage = 1;
+            $fullPage = 1;
         } else {
-                    $output = preg_replace('/(<\\/body\s*>)/is', '<###end###>$1', $output, 1, $fullPage);
+            $output = preg_replace('/(<\\/body\s*>)/is', '<###end###>$1', $output, 1, $fullPage);
         }
 
         $html = '';
         if (isset($this->scriptFiles[self::POS_END])) {
             foreach ($this->scriptFiles[self::POS_END] as $scriptFileUrl => $scriptFileValue) {
                 if (is_array($scriptFileValue)) {
-                                    $html .= CHtml::scriptFile($scriptFileUrl, $scriptFileValue) . "\n";
+                    $html .= CHtml::scriptFile($scriptFileUrl, $scriptFileValue) . "\n";
                 } else {
-                                    $html .= CHtml::scriptFile($scriptFileUrl) . "\n";
+                    $html .= CHtml::scriptFile($scriptFileUrl) . "\n";
                 }
             }
         }
@@ -580,9 +554,9 @@ class LSYii_ClientScript extends CClientScript
 
         if (isset($this->scripts[self::POS_READY])) {
             if ($fullPage) {
-                            $scripts[] = "jQuery(function($) {\n" . implode("\n", $this->scripts[self::POS_READY]) . "\n});";
+                $scripts[] = "jQuery(function($) {\n" . implode("\n", $this->scripts[self::POS_READY]) . "\n});";
             } else {
-                            $scripts[] = implode("\n", $this->scripts[self::POS_READY]);
+                $scripts[] = implode("\n", $this->scripts[self::POS_READY]);
             }
         }
         if (isset($this->scripts[self::POS_LOAD])) {
@@ -592,7 +566,7 @@ class LSYii_ClientScript extends CClientScript
 
                 $scripts[] = "jQuery(document).on('ready pjax:complete',function() {\n" . implode("\n", $this->scripts[self::POS_LOAD]) . "\n});";
             } else {
-                            $scripts[] = implode("\n", $this->scripts[self::POS_LOAD]);
+                $scripts[] = implode("\n", $this->scripts[self::POS_LOAD]);
             }
         }
 
