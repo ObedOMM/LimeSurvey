@@ -439,6 +439,32 @@ class LSYii_ClientScript extends CClientScript
 
         $html .= "<script type='text/javascript'>window.debugState = {frontend : (" . $debugFrontend . " === 1), backend : (" . $debugBackend . " === 1)};</script>";
 
+        /**
+         * @TODO This is hardcode to see how works PostHog analytics in cloud version
+         * @var LSUserIdentity
+         */
+        $user = Yii::app()->user;
+        if (!is_null($user->id)) {
+            $html .= '<script type="text/javascript"> 
+                !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+                posthog.init(
+                    \'phc_zgWEIuSlDVtXXISxJce6HvJC7mYI0UvuDlD8QfI3s8L\',
+                    {
+                        api_host:\'https://analytics.limesurvey.org\',
+                        save_referrer: false,
+                        ip: false,
+                        property_blacklist: ["$current_url", "$host", "$referrer", "$referring_domain"]
+                    }
+                );
+                posthog.identify(
+                    "' . Yii::app()->user->getId() . '",
+                    { planType: "Basic" },
+                    { limeSurveyVersion: "5" },
+                    { $current_url: "http://example.com" }
+                );
+            </script>';
+        }
+
         if ($this->enableJavaScript) {
             if (isset($this->scriptFiles[self::POS_HEAD])) {
                 foreach ($this->scriptFiles[self::POS_HEAD] as $scriptFileValueUrl => $scriptFileValue) {
